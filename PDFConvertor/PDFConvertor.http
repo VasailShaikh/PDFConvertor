@@ -1,0 +1,6 @@
+@PDFConvertor_HostAddress = http://localhost:5217
+
+GET {{PDFConvertor_HostAddress}}/Export/
+Accept: application/json
+
+###
