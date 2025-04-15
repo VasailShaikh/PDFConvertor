@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using PDFConvertor.Services;
 using Spire.Doc;
+using Spire.Xls;
 
 
 namespace PDFConvertor.Controllers
@@ -34,10 +35,10 @@ namespace PDFConvertor.Controllers
                 await _file.CopyToAsync(memoryStream);
                 fileBytes = memoryStream.ToArray();
             }           
-            _Document.format = FileFormat.Docx;
+            _Document.format = Spire.Doc.FileFormat.Docx;
             _Document.filename = attachmentName;
             _Document._file = fileBytes;
-            doc.ExportToPdf(ref _Document);
+            doc.ExportDocToPdf(ref _Document);
             if (_Document.IsSuccess == true)
             {
              fileBytes = System.IO.File.ReadAllBytes(_Document.returnPath);
@@ -46,8 +47,33 @@ namespace PDFConvertor.Controllers
             return File(fileBytes, "application/pdf", _Document.returnPath + ".pdf");           
         }
         [HttpPost]
-        [Route("HtmlToPdf")]
-        public async Task<IActionResult> HtmlToPdf(IFormFile _file)
+        [Route("XlsToPdf")]
+        public async Task<IActionResult> XlsToPdf(IFormFile _file)
+        {
+            DocumentConvertor doc = new DocumentConvertor();
+            FileDocument _Document = new FileDocument();
+            string ContentType, attachmentName = "";
+            byte[] fileBytes = null;
+
+            ContentType = _file.ContentType;
+            attachmentName = _file.FileName;
+            using (var memoryStream = new MemoryStream())
+            {
+                await _file.CopyToAsync(memoryStream);
+                fileBytes = memoryStream.ToArray();
+            }            
+            _Document.filename = attachmentName;
+            _Document._file = fileBytes;
+            doc.ExportXlsToPdf(ref _Document);
+            if (_Document.IsSuccess == true)
+            {
+                fileBytes = System.IO.File.ReadAllBytes(_Document.returnPath);
+            }
+            return File(fileBytes, "application/pdf", _Document.returnPath + ".pdf");
+        }
+        [HttpPost]
+        [Route("ImageToPdf")]
+        public async Task<IActionResult> ImageToPdf(IFormFile _file)
         {
             DocumentConvertor doc = new DocumentConvertor();
             FileDocument _Document = new FileDocument();
@@ -61,10 +87,9 @@ namespace PDFConvertor.Controllers
                 await _file.CopyToAsync(memoryStream);
                 fileBytes = memoryStream.ToArray();
             }
-            _Document.format = FileFormat.Html;
             _Document.filename = attachmentName;
             _Document._file = fileBytes;
-            doc.ExportToPdf(ref _Document);
+            doc.ImageToPdf(ref _Document);
             if (_Document.IsSuccess == true)
             {
                 fileBytes = System.IO.File.ReadAllBytes(_Document.returnPath);
