@@ -96,5 +96,31 @@ namespace PDFConvertor.Controllers
             }
             return File(fileBytes, "application/pdf", _Document.returnPath + ".pdf");
         }
+
+        [HttpPost]
+        [Route("PpToPdf")]
+        public async Task<IActionResult> PpToPdf(IFormFile _file)
+        {
+            DocumentConvertor doc = new DocumentConvertor();
+            FileDocument _Document = new FileDocument();
+            string ContentType, attachmentName = "";
+            byte[] fileBytes = null;
+
+            ContentType = _file.ContentType;
+            attachmentName = _file.FileName;
+            using (var memoryStream = new MemoryStream())
+            {
+                await _file.CopyToAsync(memoryStream);
+                fileBytes = memoryStream.ToArray();
+            }
+            _Document.filename = attachmentName;
+            _Document._file = fileBytes;
+            doc.PpToPdf(ref _Document);
+            if (_Document.IsSuccess == true)
+            {
+                fileBytes = System.IO.File.ReadAllBytes(_Document.returnPath);
+            }
+            return File(fileBytes, "application/pdf", _Document.returnPath + ".pdf");
+        }
     }
 }

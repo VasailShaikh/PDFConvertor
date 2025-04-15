@@ -144,8 +144,8 @@ namespace PDFConvertor.Services
                 { 
                    
                 presentation.LoadFromFile(_tempFilePath);
-                SaveToPdfOption saveToPdfOption = presentation.SaveToPdfOption;              
-                saveToPdfOption.PdfSecurity.Encrypt("open-psd", "permission-psd", Spire.Pdf.Security.PdfPermissionsFlags.None, Spire.Pdf.Security.PdfEncryptionKeySize.Key128Bit);
+                //SaveToPdfOption saveToPdfOption = presentation.SaveToPdfOption;              
+                //saveToPdfOption.PdfSecurity.Encrypt("open-psd", "permission-psd", Spire.Pdf.Security.PdfPermissionsFlags.None, Spire.Pdf.Security.PdfEncryptionKeySize.Key128Bit);
                 //Save to PDF
                 presentation.SaveToFile(_pdfFilePath, Spire.Presentation.FileFormat.PDF);
                 }
